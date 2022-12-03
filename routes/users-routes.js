@@ -41,6 +41,20 @@ router.post("/find", function (req, res) {
     });
 });
 
+//Find All Users
+router.post("/findall", function (req, res) {
+  UserModel.find({})
+    .then(function (dbDocument) {
+      res.json(dbDocument);
+      console.log(dbDocument);
+    })
+    .catch(function (error) {
+      console.log("/user error", error);
+
+      res.send("An error has occured");
+    });
+});
+
 //Update User
 router.put("/update-old", function (req, res) {
   UserModel.findOneAndUpdate(
@@ -77,6 +91,28 @@ router.put("/update", function (req, res) {
     })
     .catch(function (error) {
       console.log("/users/update error", error);
+      res.send("An error has occured");
+    });
+});
+
+//Update User Preferences
+router.put("/preferences", function (req, res) {
+  let updates = {};
+
+  if (req.body.subscription)
+    updates["subscription"] = Boolean(req.body.subscription);
+
+  UserModel.findOneAndUpdate(
+    { email: req.body.email },
+    { $set: updates },
+    { new: true }
+  )
+    .then(function (dbDocument) {
+      res.json(dbDocument);
+      console.log(dbDocument);
+    })
+    .catch(function (error) {
+      console.log("/users/update error ", error);
       res.send("An error has occured");
     });
 });
